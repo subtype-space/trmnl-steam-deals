@@ -1,0 +1,10 @@
+---
+strategy: polling
+no_screen_padding: 'no'
+dark_mode: 'no'
+static_data: ''
+polling_verb: get
+polling_url: https://www.cheapshark.com/api/1.0/deals?maxAge=24
+polling_headers: ''
+name: Steam Deals of the Day
+refresh_interval: 60
