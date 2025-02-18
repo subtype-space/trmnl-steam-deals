@@ -1,0 +1,23 @@
+{% assign min = 0 %}
+{% assign max = data.size %}
+{% assign diff = max | minus: min %}
+{% assign randomNumber = "now" | date: "%N" | modulo: diff | plus: min %}
+
+<div class="layout layout--col">
+  <div class="item">
+    <div class="content gap--xsmall">
+      <span class="title">{{ data[randomNumber].title }}</span>
+      <span class="label label--inverted">{{ data[randomNumber].steamRatingText | default: "no reviews" }}</span>
+    </div>
+  </div>
+  <span class="value value--xlarge value--tnums">{{ data[randomNumber].salePrice | default 0 | number_to_currency }}</span>
+  <div class="item">
+    <div class="meta"></div>
+    <div class="content">
+      <span class="value value--small value--tnums">{{ data[randomNumber].savings | default: 0 | round  }}% off</span>
+      <span class="label">Was {{ data[randomNumber].normalPrice | default: 0 | number_to_currency }}</span>
+    </div>
+  </div>
+</div>
+
+

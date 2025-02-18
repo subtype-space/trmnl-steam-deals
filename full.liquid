@@ -1,0 +1,196 @@
+<!-- import Highcharts libraries -->
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-more.js"></script>
+<script src="https://code.highcharts.com/modules/pattern-fill.js"></script>
+
+{% assign min = 0 %}
+{% assign max = data.size %}
+{% assign diff = max | minus: min %}
+{% assign randomNumber = "now" | date: "%N" | modulo: diff | plus: min %}
+{% assign randomNumber2 = "now" | date: "%N" | modulo: diff | plus: min %}
+<div class="layout layout--col">
+  <div class="item">
+    <div class="content gap--xsmall">
+      <span class="title">{{ data[randomNumber].title }}</span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols 3">
+    <div class="col col--start">
+      <img class="image-dither w--70 h--28" src="{{ data[randomNumber].thumb }}" style="height: 2; object-fit: contain">    
+    </div>
+    <div class="col col--center">
+      <div>
+        <div id="rating_1" class="w--50 h--28" style="height: 1;"></div>
+        <span class="label label--inverted text--center" style="width:fit-content; margin: auto">{{ data[randomNumber].steamRatingText | default: "no ratings" }}</span>
+      </div>
+    </div>
+    <div class="col col--end">
+      <span class="value value--large value--tnums" data-fit-value="true">{{ data[randomNumber].salePrice | default 0 | number_to_currency }}</span>
+      <div class="item">
+        <div class="meta"></div>
+        <div class="content">
+          <span class="value value--small value--tnums" data-fit-value="true">{{ data[randomNumber].savings | default 0 | round }}% off</span>
+          <span class="label">Was {{ data[randomNumber].normalPrice | default 0 | number_to_currency }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="w-full b-h-gray-5 mb--2 mt--2 p--0"></div>
+
+  <div class="item">
+    <div class="content gap--xsmall">
+      <span class="title">{{ data[randomNumber2].title }}</span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols 3">
+    <div class="col col--start">
+      <img class="image-dither w--70 h--28" src="{{ data[randomNumber2].thumb }}" style="object-fit: contain">    
+    </div>
+    <div class="col col--center">
+      <div>
+        <div id="rating_2" class="w--50 h--28" style="height: 1;"></div>
+        <span class="label label--inverted" style="width: fit-content; margin: auto">{{ data[randomNumber2].steamRatingText | default: "no ratings" }}</span>
+      </div>
+    </div>
+    <div class="col col--end">
+      <span class="value value--large value--tnums">{{ data[randomNumber2].salePrice | default 0 | number_to_currency }}</span>
+      <div class="item">
+        <div class="meta"></div>
+        <div class="content">
+          <span class="value value--small value--tnums">{{ data[randomNumber2].savings | default 0 | round }}% off</span>
+          <span class="label">Was {{ data[randomNumber2].normalPrice | default 0 | number_to_currency }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="title_bar">
+  <img class="image" src="https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg" />
+  <span class="title">Random Steam Deals of the Day</span>
+</div>
+
+
+<script type="text/javascript">
+  function createGauge(score, index, opts) {
+    Highcharts.chart(`rating_${index}`, {
+      chart: {
+        type: "gauge",
+        height: opts.height
+      },
+
+      title: {
+        text: opts.title
+      },
+
+      pane: {
+        startAngle: -150,
+        endAngle: 150,
+        background: {
+          backgroundColor: "transparent",
+          borderWidth: 0
+        }
+      },
+
+      plotOptions: {
+        gauge: {
+          animation: false,
+          pivot: {
+            backgroundColor: "transparent"
+          },
+          dial: {
+            backgroundColor: "transparent",
+            baseWidth: 0,
+          },
+        }
+      },
+
+      yAxis: {
+        min: 0,
+        max: 100,
+        minorTickInterval: 0,
+        tickColor: "#ffffff",
+        tickLength: 40,
+        tickPixelInterval: 40,
+        tickWidth: 0,
+        lineWidth: 0,
+        title: {
+          text: opts.yAxis.title,
+          style: {
+            color: "#000000",
+            fontFamily: "NicoPups",
+            fontSize: "16px"
+          }
+        },
+        labels: {
+          ...opts.labels,
+          style: {
+            fontSize: "16px"
+          }
+        },
+        plotBands: [{
+          from: 1,
+          to: score,
+          color: {
+            pattern: {
+              image: "https://usetrmnl.com/images/grayscale/gray-2.png",
+              width: 12,
+              height: 12
+            }
+          },
+          innerRadius: "82%",
+          borderRadius: "50%"
+        }, {
+          from: score + 1,
+          to: 100,
+          color: {
+            pattern: {
+              image: "https://usetrmnl.com/images/grayscale/gray-5.png",
+              width: 12,
+              height: 12
+            }
+          },
+          innerRadius: "82%",
+          borderRadius: "50%",
+        }]
+      },
+
+      series: [{
+        name: "Score",
+        data: [score],
+        dataLabels: {
+          borderWidth: 0,
+          style: {
+            fontSize: opts.series.fontSize,
+            fontWeight: opts.series.fontWeight || "400",
+            fontFamily: opts.series.fontFamily || "inherit"
+          }
+        }
+      }],
+
+      credits: {
+        enabled: false
+      }
+    });
+  }
+
+  let opts = {
+    title: null,
+    labels: { enabled: false },
+    height: "50%",
+    series: {
+      fontSize: "16px",
+      fontWeight: "400",
+      fontFamily: "NicoClean"
+    },
+    yAxis: {
+      title: null
+    }
+  }
+
+  createGauge({{ data[randomNumber].steamRatingPercent | default: 0 }}, "1", opts)
+  createGauge({{ data[randomNumber2].steamRatingPercent | default: 0 }}, "2", opts)
+</script>
