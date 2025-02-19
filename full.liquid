@@ -7,64 +7,47 @@
 {% assign max = data.size %}
 {% assign diff = max | minus: min %}
 {% assign randomNumber = "now" | date: "%N" | modulo: diff | plus: min %}
-{% assign randomNumber2 = "now" | date: "%N" | modulo: diff | plus: min %}
+
 <div class="layout layout--col">
-  <div class="item">
-    <div class="content gap--xsmall">
-      <span class="title">{{ data[randomNumber].title }}</span>
-    </div>
-  </div>
+  <span class="title">{{ data[randomNumber].title }}</span>
+  <div class="w-full b-h-gray-1"></div>
 
-  <div class="grid grid-cols 3">
-    <div class="col col--start">
-      <img class="image-dither w--70 h--28" src="{{ data[randomNumber].thumb }}" style="height: 2; object-fit: contain">    
-    </div>
-    <div class="col col--center">
-      <div>
-        <div id="rating_1" class="w--50 h--28" style="height: 1;"></div>
-        <span class="label label--inverted text--center" style="width:fit-content; margin: auto">{{ data[randomNumber].steamRatingText | default: "no ratings" }}</span>
-      </div>
-    </div>
-    <div class="col col--end">
-      <span class="value value--large value--tnums" data-fit-value="true">{{ data[randomNumber].salePrice | default 0 | number_to_currency }}</span>
-      <div class="item">
-        <div class="meta"></div>
-        <div class="content">
-          <span class="value value--small value--tnums" data-fit-value="true">{{ data[randomNumber].savings | default 0 | round }}% off</span>
-          <span class="label">Was {{ data[randomNumber].normalPrice | default 0 | number_to_currency }}</span>
+  <div class="grid">
+    <div class="col--span-1">
+      <div class="flex flex--col gap--small w--full flex--center">
+        <img class="image-dither w--70 h--28" src="{{ data[randomNumber].thumb }}" style="height: 2">    
+        <span class="value value--xlarge value--tnums" data-fit-value="true">{{ data[randomNumber].salePrice | default 0 | number_to_currency }}</span>
+       
+        <div class="w-full b-h-gray-5"></div>
+        
+        <div class="grid grid--cols-2">
+          <div class="item">
+            <div class="meta"></div>
+            <div class="content">
+              <span class="value value--small value--tnums " data-fit-value="true">{{ data[randomNumber].savings | default 0 | round }}% off</span>
+              <span class="label">Was {{ data[randomNumber].normalPrice | default 0 | number_to_currency }}</span>
+            </div>
+          </div>
+          <div class="item">
+            <div class="meta"></div>
+            <div class="content">
+              <span class="value value--small value--tnums" data-fit-value="true">{{ data[randomNumber].dealRating | default 0 | round }}/10</span>
+              <span class="label">Deal rating</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="w-full b-h-gray-5 mb--2 mt--2 p--0"></div>
-
-  <div class="item">
-    <div class="content gap--xsmall">
-      <span class="title">{{ data[randomNumber2].title }}</span>
-    </div>
-  </div>
-
-  <div class="grid grid-cols 3">
-    <div class="col col--start">
-      <img class="image-dither w--70 h--28" src="{{ data[randomNumber2].thumb }}" style="object-fit: contain">    
-    </div>
-    <div class="col col--center">
-      <div>
-        <div id="rating_2" class="w--50 h--28" style="height: 1;"></div>
-        <span class="label label--inverted" style="width: fit-content; margin: auto">{{ data[randomNumber2].steamRatingText | default: "no ratings" }}</span>
-      </div>
-    </div>
-    <div class="col col--end">
-      <span class="value value--large value--tnums">{{ data[randomNumber2].salePrice | default 0 | number_to_currency }}</span>
-      <div class="item">
-        <div class="meta"></div>
-        <div class="content">
-          <span class="value value--small value--tnums">{{ data[randomNumber2].savings | default 0 | round }}% off</span>
-          <span class="label">Was {{ data[randomNumber2].normalPrice | default 0 | number_to_currency }}</span>
+    <div class="col--span-1 col--center">
+      <div class="grid grid--col-2">
+        <div>
+          <div id="rating_1" style="height: 1;"></div>
+          <span class="label label--inverted text--center" style="width:fit-content; margin: auto">{{ data[randomNumber].steamRatingText | default: "no ratings" }}</span>
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -72,7 +55,6 @@
   <img class="image" src="https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg" />
   <span class="title">Random Steam Deals of the Day</span>
 </div>
-
 
 <script type="text/javascript">
   function createGauge(score, index, opts) {
@@ -177,20 +159,18 @@
     });
   }
 
-  let opts = {
+  let opts = {     
     title: null,
+    height: "80%",
     labels: { enabled: false },
-    height: "50%",
     series: {
-      fontSize: "16px",
-      fontWeight: "400",
-      fontFamily: "NicoClean"
+      fontSize: "3em",
+      fontWeight: "550"
     },
     yAxis: {
-      title: null
+      title: "{{ data[randomNumber].steamRatingCount | default: 0 }} ratings"
     }
   }
 
   createGauge({{ data[randomNumber].steamRatingPercent | default: 0 }}, "1", opts)
-  createGauge({{ data[randomNumber2].steamRatingPercent | default: 0 }}, "2", opts)
 </script>

@@ -11,13 +11,20 @@
     </div>
   </div>
   <span class="value value--xlarge value--tnums">{{ data[randomNumber].salePrice | default 0 | number_to_currency }}</span>
-  <div class="item">
-    <div class="meta"></div>
-    <div class="content">
-      <span class="value value--small value--tnums">{{ data[randomNumber].savings | default: 0 | round  }}% off</span>
-      <span class="label">Was {{ data[randomNumber].normalPrice | default: 0 | number_to_currency }}</span>
+  <div class="grid grid--cols-2">
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--small value--tnums " data-fit-value="true">{{ data[randomNumber].savings | default 0 | round }}% off</span>
+        <span class="label">Was {{ data[randomNumber].normalPrice | default 0 | number_to_currency }}</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--small value--tnums" data-fit-value="true">{{ data[randomNumber].dealRating | default 0 | round }}/10</span>
+        <span class="label">Deal rating</span>
+      </div>
     </div>
   </div>
 </div>
-
-
