@@ -15,11 +15,11 @@
   <div class="grid">
     <div class="col--span-1">
       <div class="flex flex--col gap--small w--full flex--center">
-        <img class="image-dither w--70 h--28" src="{{ data[randomNumber].thumb }}" style="height: 2">    
+        <img class="image-dither w--70 h--28" src="{{ data[randomNumber].thumb }}" style="height: 2">
         <span class="value value--xlarge value--tnums" data-fit-value="true">{{ data[randomNumber].salePrice | default 0 | number_to_currency }}</span>
-       
+
         <div class="w-full b-h-gray-5"></div>
-        
+
         <div class="grid grid--cols-2">
           <div class="item">
             <div class="meta"></div>
@@ -43,7 +43,31 @@
       <div class="grid grid--col-2">
         <div>
           <div id="rating_1" style="height: 1;"></div>
-          <span class="label label--inverted text--center" style="width:fit-content; margin: auto">{{ data[randomNumber].steamRatingText | default: "no ratings" }}</span>
+          {% if data[randomNumber].steamRatingText == null %}
+
+          {% assign metacriticScore = data[randomNumber].metacriticScore | ceil %}
+          {% if metacriticScore > 95 %}
+          <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Overwhelmingly Positive</span>
+          {% elsif metacriticScore >= 90 %}
+          <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Very Positive</span>
+          {% elsif metacriticScore >= 70 %}
+          <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Mostly Positive</span>
+          {% elsif metacriticScore >= 60 %}
+          <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Positive</span>
+          {% elsif metacriticScore >= 45 %}
+          <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Mixed</span>
+          {% elsif metacriticScore >= 40 %}
+          <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Mostly Negative</span>
+          {% elsif metacriticScore >= 30 %}
+          <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Very Negative</span>
+          {% elsif metacriticScore <= 30 and metacriticScore > 0 %}
+          <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Overwhelmingly Negative</span>
+          {% else %}
+          <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Not enough reviews</span>
+          {% endif %}
+          {% else %}
+          <span class="label label--inverted text--center" style="width:fit-content; margin: auto">{{ data[randomNumber].steamRatingText | default: "Not enough reviews" }}</span>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -168,9 +192,20 @@
       fontWeight: "550"
     },
     yAxis: {
-      title: "{{ data[randomNumber].steamRatingCount | default: 0 }} ratings"
-    }
+      {% if data[randomNumber].steamRatingPercent == "0" %}
+  title: "Metacritic score"
+  {% else %}
+  title: "{{ data[randomNumber].steamRatingCount | default: 0 }} ratings"
+  {% endif %}
+  }
   }
 
+
+  {% if data[randomNumber].steamRatingPercent == "0" %}
+  createGauge({{ data[randomNumber].metacriticScore | default: 0 }}, "1", opts)
+  {% else %}
   createGauge({{ data[randomNumber].steamRatingPercent | default: 0 }}, "1", opts)
+  {% endif %}
+
+
 </script>

@@ -21,7 +21,31 @@
     <div class="col col--center">
       <div>
         <div id="rating_1" class="w--50 h--28" style="height: 1;"></div>
-        <span class="label label--inverted text--center" style="width:fit-content; margin: auto">{{ data[randomNumber].steamRatingText | default: "no ratings" }}</span>
+        {% if data[randomNumber].steamRatingText == null %}
+
+        {% assign metacriticScore = data[randomNumber].metacriticScore | ceil %}
+        {% if metacriticScore > 95 %}
+        <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Overwhelmingly Positive</span>
+        {% elsif metacriticScore >= 90 %}
+        <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Very Positive</span>
+        {% elsif metacriticScore >= 70 %}
+        <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Mostly Positive</span>
+        {% elsif metacriticScore >= 60 %}
+        <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Positive</span>
+        {% elsif metacriticScore >= 45 %}
+        <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Mixed</span>
+        {% elsif metacriticScore >= 40 %}
+        <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Mostly Negative</span>
+        {% elsif metacriticScore >= 30 %}
+        <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Very Negative</span>
+        {% elsif metacriticScore <= 30 and metacriticScore > 0 %}
+        <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Overwhelmingly Negative</span>
+        {% else %}
+        <span class="label label--inverted text--center" style="width:fit-content; margin: auto">Not enough reviews</span>
+        {% endif %}
+        {% else %}
+        <span class="label label--inverted text--center" style="width:fit-content; margin: auto">{{ data[randomNumber].steamRatingText | default: "Not enough reviews" }}</span>
+        {% endif %}
       </div>
     </div>
     <div class="col col--end gap--small">
@@ -164,5 +188,9 @@
     }
   }
 
+  {% if data[randomNumber].steamRatingPercent == "0" %}
+  createGauge({{ data[randomNumber].metacriticScore | default: 0 }}, "1", opts)
+  {% else %}
   createGauge({{ data[randomNumber].steamRatingPercent | default: 0 }}, "1", opts)
+  {% endif %}
 </script>
